@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Fragment } from "react";
 import { getISOWeek, labelMinggu } from "@/lib/utils";
 
 interface Wilayah { id: string; nama: string; }
@@ -187,8 +187,8 @@ export default function LaporanPage() {
                   const jentikCount = k.detail_konfirmasi.filter((d) => d.ada_jentik).length;
                   const isExpanded = expanded === k.id;
                   return (
-                    <>
-                      <tr key={k.id} className="hover:bg-gray-50">
+                    <Fragment key={k.id}>
+                      <tr className="hover:bg-gray-50">
                         <td className="px-5 py-3 font-medium text-gray-800">{k.nama_warga}</td>
                         <td className="px-5 py-3 text-gray-500 hidden lg:table-cell">{k.alamat || "-"}</td>
                         <td className="px-5 py-3 text-gray-600">{k.wilayah?.nama || "-"}</td>
@@ -218,7 +218,7 @@ export default function LaporanPage() {
                         </td>
                       </tr>
                       {isExpanded && (
-                        <tr key={`${k.id}-detail`}>
+                        <tr>
                           <td colSpan={5} className="px-5 py-3 bg-gray-50">
                             <div className="text-xs text-gray-600 space-y-1">
                               {k.detail_konfirmasi.map((d) => (
@@ -235,7 +235,7 @@ export default function LaporanPage() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   );
                 })}
               </tbody>
