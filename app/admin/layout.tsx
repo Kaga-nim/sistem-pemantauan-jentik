@@ -1,10 +1,5 @@
-import AdminNav from "@/components/AdminNav";
-
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex min-h-screen bg-gray-100">
-      <AdminNav />
-      <main className="flex-1 overflow-auto">{children}</main>
-    </div>
-  );
+// Layout ini hanya membungkus halaman login (/admin)
+// Halaman protected punya layout sendiri di (protected)/layout.tsx
+export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
 }

@@ -58,5 +58,5 @@ ALTER TABLE detail_konfirmasi DISABLE ROW LEVEL SECURITY;
 
 -- Data contoh (opsional — hapus jika tidak diperlukan)
 -- INSERT INTO wilayah (nama, deskripsi, lat, lng) VALUES
---   ('RT 01 / RW 05', 'Kelurahan Menteng', -6.1944, 106.8294),
---   ('RT 02 / RW 05', 'Kelurahan Menteng', -6.1960, 106.8300);
+--   ('RT 01/RW 05', 'Kelurahan Menteng', -6.1944, 106.8294),
+--   ('RT 02/RW 05', 'Kelurahan Menteng', -6.1960, 106.8300);

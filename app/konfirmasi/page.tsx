@@ -21,6 +21,7 @@ function KonfirmasiForm() {
 
   const nama = searchParams.get("nama") || "";
   const wilayahId = searchParams.get("wilayah_id") || "";
+  const alamat = searchParams.get("alamat") || "";
   const [wilayahNama, setWilayahNama] = useState("");
   const [titikList, setTitikList] = useState<Titik[]>([]);
   const [detail, setDetail] = useState<DetailState[]>([]);
@@ -28,6 +29,7 @@ function KonfirmasiForm() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [isDuplicate, setIsDuplicate] = useState(false);
 
   useEffect(() => {
     if (!nama || !wilayahId) {
@@ -62,19 +64,26 @@ function KonfirmasiForm() {
     );
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const doSubmit = async (force = false) => {
     setSubmitting(true);
     setError("");
+    setIsDuplicate(false);
 
     try {
       const res = await fetch("/api/konfirmasi", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nama_warga: nama, wilayah_id: wilayahId, catatan, detail }),
+        body: JSON.stringify({ nama_warga: nama, wilayah_id: wilayahId, alamat, catatan, detail, force }),
       });
 
       const data = await res.json();
+
+      if (res.status === 409 && data.duplicate) {
+        setIsDuplicate(true);
+        setSubmitting(false);
+        return;
+      }
+
       if (!res.ok) throw new Error(data.error || "Gagal menyimpan konfirmasi.");
 
       router.push(
@@ -85,6 +94,11 @@ function KonfirmasiForm() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    doSubmit(false);
   };
 
   if (loading) {
@@ -110,13 +124,39 @@ function KonfirmasiForm() {
             Kembali
           </button>
           <h1 className="text-lg font-bold">{wilayahNama || "Konfirmasi"}</h1>
-          <p className="text-green-100 text-sm">Halo, <strong>{nama}</strong> — tandai setiap titik yang diperiksa</p>
+          <p className="text-green-100 text-sm">
+            Halo, <strong>{nama}</strong>{alamat && <> — {alamat}</>}
+          </p>
         </div>
       </div>
 
       <div className="max-w-xl mx-auto px-4 mt-5">
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-4 mb-4 text-sm">{error}</div>
+        )}
+
+        {isDuplicate && (
+          <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4 mb-4">
+            <p className="text-yellow-800 font-medium text-sm">⚠️ Anda sudah konfirmasi minggu ini</p>
+            <p className="text-yellow-700 text-sm mt-1">
+              Data sebelumnya akan tetap tersimpan. Kirim ulang hanya jika ada koreksi.
+            </p>
+            <div className="flex gap-2 mt-3">
+              <button
+                onClick={() => setIsDuplicate(false)}
+                className="flex-1 border border-yellow-300 text-yellow-700 py-2 rounded-lg text-sm hover:bg-yellow-100"
+              >
+                Batal
+              </button>
+              <button
+                onClick={() => doSubmit(true)}
+                disabled={submitting}
+                className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg text-sm font-medium"
+              >
+                {submitting ? "Menyimpan..." : "Kirim Ulang"}
+              </button>
+            </div>
+          </div>
         )}
 
         {titikList.length === 0 && !error ? (

@@ -12,8 +12,10 @@ export default function HomePage() {
   const router = useRouter();
   const [wilayahList, setWilayahList] = useState<Wilayah[]>([]);
   const [nama, setNama] = useState("");
+  const [alamat, setAlamat] = useState("");
   const [wilayahId, setWilayahId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [validasi, setValidasi] = useState({ nama: "", alamat: "" });
   const [fetchError, setFetchError] = useState("");
 
   useEffect(() => {
@@ -26,11 +28,28 @@ export default function HomePage() {
       .catch(() => setFetchError("Gagal terhubung ke server."));
   }, []);
 
+  const validate = () => {
+    const err = { nama: "", alamat: "" };
+    const namaTrim = nama.trim();
+    if (namaTrim.length < 2) err.nama = "Nama minimal 2 karakter.";
+    else if (namaTrim.length > 100) err.nama = "Nama maksimal 100 karakter.";
+    else if (!/^[\w\s'.,-]+$/i.test(namaTrim)) err.nama = "Nama mengandung karakter tidak valid.";
+
+    const alamatTrim = alamat.trim();
+    if (alamatTrim.length > 200) err.alamat = "Alamat maksimal 200 karakter.";
+    else if (alamatTrim && /<|>|script/i.test(alamatTrim)) err.alamat = "Alamat mengandung karakter tidak valid.";
+
+    setValidasi(err);
+    return !err.nama && !err.alamat;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nama.trim() || !wilayahId) return;
+    if (!validate() || !wilayahId) return;
     setLoading(true);
-    router.push(`/konfirmasi?nama=${encodeURIComponent(nama.trim())}&wilayah_id=${wilayahId}`);
+    router.push(
+      `/konfirmasi?nama=${encodeURIComponent(nama.trim())}&wilayah_id=${wilayahId}&alamat=${encodeURIComponent(alamat.trim())}`
+    );
   };
 
   const wilayahTerpilih = wilayahList.find((w) => w.id === wilayahId);
@@ -66,21 +85,38 @@ export default function HomePage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nama Lengkap
+                Nama Lengkap <span className="text-red-400">*</span>
               </label>
               <input
                 type="text"
                 value={nama}
-                onChange={(e) => setNama(e.target.value)}
+                onChange={(e) => { setNama(e.target.value); setValidasi((v) => ({ ...v, nama: "" })); }}
                 placeholder="Masukkan nama Anda"
                 required
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-800 placeholder-gray-400"
+                maxLength={100}
+                className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-800 placeholder-gray-400 ${validasi.nama ? "border-red-400 bg-red-50" : "border-gray-200"}`}
               />
+              {validasi.nama && <p className="text-red-500 text-xs mt-1">{validasi.nama}</p>}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Wilayah Tempat Tinggal
+                Alamat / No. Rumah <span className="text-gray-400 font-normal">(opsional)</span>
+              </label>
+              <input
+                type="text"
+                value={alamat}
+                onChange={(e) => { setAlamat(e.target.value); setValidasi((v) => ({ ...v, alamat: "" })); }}
+                placeholder="cth: Jl. Melati No. 5"
+                maxLength={200}
+                className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-800 placeholder-gray-400 ${validasi.alamat ? "border-red-400 bg-red-50" : "border-gray-200"}`}
+              />
+              {validasi.alamat && <p className="text-red-500 text-xs mt-1">{validasi.alamat}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Wilayah Tempat Tinggal <span className="text-red-400">*</span>
               </label>
               <select
                 value={wilayahId}
@@ -107,7 +143,7 @@ export default function HomePage() {
 
             <button
               type="submit"
-              disabled={loading || !nama.trim() || !wilayahId}
+              disabled={loading || !nama.trim() || !wilayahId || !!validasi.nama || !!validasi.alamat}
               className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-300 text-white font-semibold py-3 px-4 rounded-xl transition-colors duration-200"
             >
               {loading ? "Memuat..." : "Mulai Konfirmasi →"}
