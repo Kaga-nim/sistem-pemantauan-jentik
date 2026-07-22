@@ -124,6 +124,14 @@ export default function PetaPage() {
                     <p className="text-xs text-red-500 mt-0.5">
                       {w.total_jentik} titik berjentik dari {w.total_konfirmasi} laporan
                     </p>
+                    <a
+                      href={`https://www.google.com/maps?q=${w.lat},${w.lng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 mt-2 text-xs text-blue-600 bg-white border border-blue-200 rounded px-2 py-1 hover:bg-blue-50 transition-colors"
+                    >
+                      📍 Buka Google Maps
+                    </a>
                   </div>
                 ))}
               </div>

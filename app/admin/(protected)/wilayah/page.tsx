@@ -115,6 +115,14 @@ export default function WilayahPage() {
                     {w.lat}, {w.lng}
                   </td>
                   <td className="px-5 py-3 text-right space-x-2">
+                    <a
+                      href={`https://www.google.com/maps?q=${w.lat},${w.lng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 hover:underline text-xs"
+                    >
+                      📍 Maps
+                    </a>
                     <button
                       onClick={() => openEdit(w)}
                       className="text-blue-600 hover:underline text-xs"
