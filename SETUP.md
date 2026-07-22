@@ -5,7 +5,7 @@
 1. Buat akun gratis di [supabase.com](https://supabase.com)
 2. Buat project baru
 3. Masuk ke **SQL Editor** → klik **New query**
-4. Salin semua isi file `supabase-schema.sql` dan jalankan (Run)
+4. Salin semua isi file `database/supabase-schema.sql` dan jalankan (Run)
 5. Setelah berhasil, pergi ke **Settings → API**
 6. Catat:
    - **Project URL** → `SUPABASE_URL`
