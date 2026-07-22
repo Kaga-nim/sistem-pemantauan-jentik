@@ -4,9 +4,8 @@ node_modules/
 .pnp.js
 
 # Next.js
-.next/
-out/
 .next
+out/
 
 # Environment variables — JANGAN pernah di-commit
 .env
