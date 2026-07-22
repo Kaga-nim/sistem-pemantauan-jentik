@@ -1,8 +1,12 @@
 {
+  "/api/wilayah/route": "app/api/wilayah/route.js",
+  "/api/laporan/route": "app/api/laporan/route.js",
+  "/api/titik/route": "app/api/titik/route.js",
   "/api/peta/route": "app/api/peta/route.js",
   "/page": "app/page.js",
   "/admin/(protected)/laporan/page": "app/admin/(protected)/laporan/page.js",
   "/admin/(protected)/peta/page": "app/admin/(protected)/peta/page.js",
+  "/admin/(protected)/titik/page": "app/admin/(protected)/titik/page.js",
   "/admin/(protected)/dashboard/page": "app/admin/(protected)/dashboard/page.js",
-  "/admin/(protected)/titik/page": "app/admin/(protected)/titik/page.js"
+  "/admin/(protected)/wilayah/page": "app/admin/(protected)/wilayah/page.js"
 }
